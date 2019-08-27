@@ -42,6 +42,37 @@ function searchItems() {
                 "How many would you like to buy?"
             ]
         })
-
-
+        .then(function (answer) {
+            switch (answer.action) {
+                case "Find Product by ID":
+                    productSearch();
+                    break;
+            }
+        })
 };
+
+function productSearch() {
+    inquirer
+        .prompt({
+            name: "product",
+            type: "input",
+            message: "What product would you like to look for?"
+        })
+        .then(function (answer) {
+            console.log(answer.product);
+            connection.query("SELECT * FROM bamazon_db WHERE ?", { product: answer.product }, function (err, res) {
+                if (err) throw err;
+                console.log(
+                    "item_id " +
+                    res[0].item_id +
+                    " || product_name: " +
+                    res[0].product_name +
+                    " ||  price: " +
+                    res[0].price +
+                    " || stock_quantity: " +
+                    res[0].stock_quantity
+                );
+                runSearch();
+            });
+        });
+}
